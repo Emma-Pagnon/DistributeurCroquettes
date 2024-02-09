@@ -16,6 +16,7 @@
   // digitalWrite(pinDirectionB, LOW); 
 
 #include <Stepper.h>
+
 #define STEPS 200
 
 const int pinDirectionA = 12; // DIR
@@ -42,8 +43,8 @@ void setup()
   pinMode(pinSpeedA, OUTPUT); //Enable
   pinMode(pinSpeedB, OUTPUT); //Enable
 
-  digitalWrite(pinSpeedA, HIGH); //Enable
-  digitalWrite(pinSpeedB, HIGH); //Enable
+  analogWrite(pinSpeedA, 200); //Enable PWM
+  analogWrite(pinSpeedB, 200); //Enable PWM
 
   // set the speed of the motor to 30 RPMs
   stepper.setSpeed(30);
