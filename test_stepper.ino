@@ -1,49 +1,70 @@
 
+// step 1
+  // digitalWrite(pinDirectionA, HIGH); 
+  // digitalWrite(pinDirectionB, LOW); 
 
-void setup() {
-  pinMode(3, OUTPUT); // Déclaration de la broche n°3 en sortie Digitale PWM
-  pinMode(8, OUTPUT); // Déclaration de la broche n°8 en sortie Digitale
-  pinMode(9, OUTPUT); // Déclaration de la broche n°8 en sortie Digitale
-  pinMode(11, OUTPUT); // Déclaration de la broche n°11 en sortie Digitale PWM
-  pinMode(12, OUTPUT); // Déclaration de la broche n°12 en sortie Digitale
-  pinMode(13, OUTPUT); // Déclaration de la broche n°13 en sortie Digitale
+// step 2
+  //  digitalWrite(pinDirectionA, HIGH); 
+  // digitalWrite(pinDirectionB, HIGH); 
+
+// step 3
+  //  digitalWrite(pinDirectionA, LOW);
+  // digitalWrite(pinDirectionB, HIGH);
+
+// step 4
+  //  digitalWrite(pinDirectionA, LOW); 
+  // digitalWrite(pinDirectionB, LOW); 
+
+#include <Stepper.h>
+
+#define STEPS 200
+
+const int pinDirectionA = 12; // DIR
+const int pinDirectionB = 13; // DIR
+const int pinBrakeA = 9;  // BRAKE
+const int pinBrakeB = 8;  // BRAKE
+const int pinSpeedA = 3;  // EN
+const int pinSpeedB = 11; // EN
+
+Stepper stepper(STEPS, pinDirectionA, pinDirectionB);
+int stepCount = 0;         // number of steps the motor has taken
+
+//-----------------------------------------------------------------------
+void setup() 
+{ 
+  //establish motor brake pins
+  pinMode(pinBrakeA, OUTPUT); //brake (disable) CH A
+  pinMode(pinBrakeB, OUTPUT); //brake (disable) CH B
+
+  digitalWrite(pinBrakeA, LOW); //brake (disable) CH A
+  digitalWrite(pinBrakeB, LOW); //brake (disable) CH B
+
+  //establish motor Enable pins
+  pinMode(pinSpeedA, OUTPUT); //Enable
+  pinMode(pinSpeedB, OUTPUT); //Enable
+
+  analogWrite(pinSpeedA, 200); //Enable PWM
+  analogWrite(pinSpeedB, 200); //Enable PWM
+
+  // set the speed of the motor to 30 RPMs
+  stepper.setSpeed(30);
+
+  Serial.begin(9600);
+
+  pinMode(pinDirectionA, OUTPUT); 
+  pinMode(pinDirectionB, OUTPUT); 
 }
 
-void loop(){
-// Commande moteur pas à pas Unipolaire 5 fils en Full Step
-// Pas n°1 | Sorties B- et B+ du Shield Moteur -> Bobines A et B du moteur pas à pas
-digitalWrite(8, HIGH); //Activation Pin n°8
-digitalWrite(9, LOW); //Désactivation Pin n°9
-digitalWrite(12, LOW); //Désactivation Pin n°12
-digitalWrite(13, HIGH); //Activation Pin n°13
-analogWrite(3,0); //Pin 3 PWM valeur 0
-analogWrite(11, 255); //Pin 11 PWM valeur 255
-delay(20);
+//-----------------------------------------------------------------------
+void loop() 
+{
+  // step one revolution  in one direction:
+  Serial.println("clockwise");
+  stepper.step(100);
+  delay(1000);
 
-// Pas n°2 | Sorties B+ et A- du Shield Moteur -> Bobines B et C du moteur pas à pas 
-digitalWrite(8, LOW); //Désactivation Pin n°8
-digitalWrite(9, LOW); //Désactivation Pin n°9
-digitalWrite(12, LOW);  //Désactivation Pin n°12
-digitalWrite(13, HIGH); //Activation Pin n°13
-analogWrite(3, 255); //Pin 3 PWM valeur 255
-analogWrite(11, 255); //Pin 11 PWM valeur 255
-delay(20);
-
-// Pas n°3 | Sorties A- et A+ du Shield Moteur -> Bobines C et D du moteur pas à pas 
-digitalWrite(8,LOW);  //Désactivation Pin n°8
-digitalWrite(9,  HIGH); //Activation Pin n°9
-digitalWrite(12, HIGH); //Activation Pin n°12
-digitalWrite(13, LOW);  //Désactivation Pin n°13
-analogWrite(3,255); //Pin 3 PWM valeur 255
-analogWrite(11, 0); //Pin 11 PWM valeur 0
-delay(20);
-
-// Pas n°4 | Sorties A+ et A- du Shield Moteur -> Bobines D et A du moteur pas à pas 
-digitalWrite(8, LOW);  //Désactivation Pin n°8
-digitalWrite(9, LOW); //Désactivation Pin n°9
-digitalWrite(12, HIGH); //Activation Pin n°12
-digitalWrite(13, LOW);  //Désactivation Pin n°13
-analogWrite(3, 255); //Pin 3 PWM valeur 255
-analogWrite(11, 255); //Pin 11 PWM valeur 255
-delay(20);
+  // step one revolution in the other direction:
+  Serial.println("counterclockwise");
+  stepper.step(-100);
+  delay(1000);
 }
